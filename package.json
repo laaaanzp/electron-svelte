@@ -1,0 +1,65 @@
+{
+	"name": "electron-svelte",
+	"private": true,
+	"version": "0.0.2",
+	"type": "module",
+	"main": "dist-electron/main.cjs",
+	"scripts": {
+		"dev:svelte": "vite dev",
+		"dev:electron": "tsc -p electron/tsconfig.json --watch",
+		"dev": "concurrently \"npm run dev:svelte\" \"npm run dev:electron\" \"wait-on http://localhost:5269 && electron .\"",
+
+		"build:svelte": "vite build",
+		"build:electron": "tsc -p electron/tsconfig.json",
+		"build": "npm run build:svelte && npm run build:electron",
+
+		"package": "npm run build && electron-builder",
+  		"postpackage": "node scripts/move-build.mjs",
+
+		"electron": "electron .",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "prettier --check .",
+		"format": "prettier --write ."
+	},
+	"build": {
+		"appId": "com.electron-svelte.app",
+		"productName": "Electron + Svelte",
+		"directories": {
+			"output": "release"
+		},
+		"files": [
+			"build/**/*",
+			"dist-electron/**/*",
+			"package.json"
+		],
+		"extraResources": [{ "from": "build", "to": "server" }],
+		"win": {
+			"target": "nsis"
+		}
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^7.0.1",
+		"@sveltejs/adapter-node": "^5.5.7",
+		"@sveltejs/kit": "^2.63.0",
+		"@sveltejs/vite-plugin-svelte": "^7.1.2",
+		"@tailwindcss/vite": "^4.3.0",
+		"concurrently": "^10.0.5",
+		"electron": "^44.5.1",
+		"electron-builder": "^26.15.3",
+		"prettier": "^3.8.3",
+		"prettier-plugin-svelte": "^4.1.0",
+		"prettier-plugin-tailwindcss": "^0.8.0",
+		"svelte": "^5.56.1",
+		"svelte-check": "^4.6.0",
+		"tailwindcss": "^4.3.0",
+		"typescript": "^6.0.3",
+		"vite": "^8.0.16",
+		"wait-on": "^9.5.1"
+	},
+	"dependencies": {
+		"dotenv": "^18.0.4"
+	}
+}
